@@ -4,3 +4,4 @@ gtts==2.5.1
 deep-translator==1.11.4
 speechrecognition==3.10.4
 pronouncing==0.2.0
+setuptools

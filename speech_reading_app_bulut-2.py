@@ -339,31 +339,6 @@ def listen_and_convert(audio_file):
     except Exception as e:
         return f"Ses dosyası işlenirken bir hata oluştu: {e}"
 
-with col2:
-    st.write("**Ses dosyanızı yükleyin (WAV formatında):**")
-    audio_file = st.file_uploader("Ses dosyası seçin", type=["wav"])
-    if audio_file is not None:
-        st.audio(audio_file, format="audio/wav")  # Yüklenen sesi çal
-        spoken_text = listen_and_convert(audio_file)
-        st.session_state["spoken_text"] = spoken_text
-        if st.session_state["spoken_text"]:
-            st.write("**Tanınan Metniniz (Sizin Okumanız):**")
-            st.success(st.session_state["spoken_text"])  # Tanınan metni başarı olarak göster
-
-        if st.session_state["spoken_text"] and not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
-                                          and not st.session_state["spoken_text"].startswith("API hatası") \
-                                          and not st.session_state["spoken_text"].startswith("Ses dosyası işlenirken"):
-            if st.button("Analizi Yap", key="analyze_speech"):
-                error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
-                if error_rate < ERROR_THRESHOLD:
-                    st.balloons()  # Başarılı okumalarda balonlar uçsun
-                    st.success("Harika! Okumanız oldukça iyi.")
-                else:
-                    st.warning("Bazı hatalar var. Aşağıdaki raporu inceleyin.")
-                report_errors(error_rate, extra_words, missing_words)
-                st.write("**Karşılaştırma:**")
-                st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
-                st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
 
         with col3:
             if st.button("Önceki"):

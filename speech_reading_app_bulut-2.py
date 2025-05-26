@@ -293,31 +293,42 @@ def main():
         #            st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
         #            st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
         with col2:
-            st.write("**Ses dosyanızı yükleyin (WAV formatında):**")
-            audio_file = st.file_uploader("Ses dosyası seçin", type=["wav"])
-            if audio_file is not None:
-                st.audio(audio_file, format="audio/wav")  # Yüklenen sesi çal
-                spoken_text = listen_and_convert(audio_file)
-                st.session_state["spoken_text"] = spoken_text
-            if st.session_state["spoken_text"]:
-                st.write("**Tanınan Metniniz (Sizin Okumanız):**")
-                st.success(st.session_state["spoken_text"])  # Tanınan metni başarı olarak göster
+            if st.button("Sesle Oku", key="record_speech"):
+                st.write("3 saniye bekleyin...")
+                time.sleep(3)  # 3 saniye bekle
+               st.audio("beep.wav", format="audio/wav")  # Bip sesini çal
+               st.session_state["show_upload"] = True  # Ses dosyası yükleme alanını göster
 
-                if st.session_state["spoken_text"] and not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
-                                                  and not st.session_state["spoken_text"].startswith("API hatası") \
-                                                  and not st.session_state["spoken_text"].startswith("Ses dosyası işlenirken"):
-                    if st.button("Analizi Yap", key="analyze_speech"):
-                        error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
-                        if error_rate < ERROR_THRESHOLD:
-                            st.balloons()  # Başarılı okumalarda balonlar uçsun
-                            st.success("Harika! Okumanız oldukça iyi.")
-                    else:
-                        st.warning("Bazı hatalar var. Aşağıdaki raporu inceleyin.")
-                    report_errors(error_rate, extra_words, missing_words)
-                    st.write("**Karşılaştırma:**")
-                    st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
-                    st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
+            if "show_upload" in st.session_state and st.session_state["show_upload"]:
+                st.warning("Not: Streamlit Cloud mikrofon erişimine izin vermiyor. Lütfen paragrafı okuduğunuz bir ses dosyasını yükleyin (WAV formatında, en az 45 saniye).")
+                audio_file = st.file_uploader("Ses dosyası seçin", type=["wav"], key="speech_upload")
+                if audio_file is not None:
+                    st.audio(audio_file, format="audio/wav")  # Yüklenen sesi çal
+                    spoken_text = listen_and_convert(audio_file)
+                    st.session_state["spoken_text"] = spoken_text
+                    if st.session_state["spoken_text"]:
+                        st.write("**Tanınan Metniniz (Sizin Okumanız):**")
+                        st.success(st.session_state["spoken_text"])
 
+                        # Orijinal ve tanınan metni alt alta göster
+                        st.write("**Karşılaştırma:**")
+                        st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
+                        st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
+
+                        # Hataları analiz et ve göster
+                        if not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
+                            and not st.session_state["spoken_text"].startswith("API hatası") \
+                            and not st.session_state["spoken_text"].startswith("Ses dosyası işlenirken"):
+                            error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
+                            st.write("**Hata Analizi:**")
+                            st.write(f"- **Hata Oranı:** {error_rate:.2%}")
+                            st.write(f"- **Fazladan Kelimeler:** {extra_words if extra_words else 'Yok'}")
+                            st.write(f"- **Eksik Kelimeler:** {missing_words if missing_words else 'Yok'}")
+                           if error_rate < ERROR_THRESHOLD:
+                                st.balloons()
+                                st.success("Harika! Okumanız oldukça iyi.")
+                            else:
+                                st.warning("Bazı hatalar var. Yukarıdaki raporu inceleyin.")
 # def listen_and_convert():
 #     recognizer = sr.Recognizer()
 #     with sr.Microphone() as source:

@@ -164,6 +164,20 @@ def report_errors(error_rate, extra_words, missing_words):
 #            return f"Ses kaydı sırasında beklenmeyen bir hata oluştu: {e}"
 
 # --- Ana Streamlit Uygulaması ---
+def listen_and_convert(audio_file):
+    """Yüklenen ses dosyasını metne çevirir."""
+    recognizer = sr.Recognizer()
+    try:
+        with sr.AudioFile(audio_file) as source:
+            audio = recognizer.record(source)
+            spoken_text = recognizer.recognize_google(audio, language="en-US")
+            return spoken_text
+    except sr.UnknownValueError:
+        return "Konuşma tanınamadı. Daha net bir ses dosyası yüklemeyi deneyin."
+    except sr.RequestError as e:
+        return f"API hatası: {e}. İnternet bağlantınızı veya Google Speech API limitlerini kontrol edin."
+    except Exception as e:
+        return f"Ses dosyası işlenirken bir hata oluştu: {e}"
 
 def main():
     st.title("Sesle Okuma Çalışması")
@@ -278,6 +292,114 @@ def main():
         #            st.write("**Karşılaştırma:**")
         #            st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
         #            st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
+        with col2:
+    st.write("**Ses dosyanızı yükleyin (WAV formatında):**")
+    audio_file = st.file_uploader("Ses dosyası seçin", type=["wav"])
+    if audio_file is not None:
+        st.audio(audio_file, format="audio/wav")  # Yüklenen sesi çal
+        spoken_text = listen_and_convert(audio_file)
+        st.session_state["spoken_text"] = spoken_text
+        if st.session_state["spoken_text"]:
+            st.write("**Tanınan Metniniz (Sizin Okumanız):**")
+            st.success(st.session_state["spoken_text"])  # Tanınan metni başarı olarak göster
+
+        if st.session_state["spoken_text"] and not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
+                                          and not st.session_state["spoken_text"].startswith("API hatası") \
+                                          and not st.session_state["spoken_text"].startswith("Ses dosyası işlenirken"):
+            if st.button("Analizi Yap", key="analyze_speech"):
+                error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
+                if error_rate < ERROR_THRESHOLD:
+                    st.balloons()  # Başarılı okumalarda balonlar uçsun
+                    st.success("Harika! Okumanız oldukça iyi.")
+                else:
+                    st.warning("Bazı hatalar var. Aşağıdaki raporu inceleyin.")
+                report_errors(error_rate, extra_words, missing_words)
+                st.write("**Karşılaştırma:**")
+                st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
+                st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
+
+Değişiklikler:
+st.file_uploader: Kullanıcıdan WAV formatında bir ses dosyası yüklemesini istiyoruz.
+
+st.audio: Yüklenen ses dosyasını çalıyoruz, böylece kullanıcı dosyayı dinleyebilir.
+
+listen_and_convert(audio_file): Yüklenen ses dosyasını metne çeviriyoruz.
+
+Hata mesajlarını yeni duruma uygun hale getirdik ("Ses kaydı sırasında" yerine "Ses dosyası işlenirken").
+
+3. Kodu Güncelle ve Yeniden Deploy Et
+Masaüstündeki Dosyayı Düzenle:
+Windows’ta Dosya Gezgini’ni aç (Windows tuşu + E).
+
+sesli_okuma_masaustu klasörüne git.
+
+speech_reading_app_bulut_2.py dosyasını Not Defteri (Notepad) veya herhangi bir metin editörüyle aç.
+
+Aşağıdaki değişiklikleri yap:
+listen_and_convert() Fonksiyonunu Güncelle:
+Şu yorum satırındaki fonksiyonu bul:
+python
+
+# def listen_and_convert():
+#     recognizer = sr.Recognizer()
+#     with sr.Microphone() as source:
+#         st.info("Lütfen konuşmaya başlayın... (45 saniye)")
+#         ...
+
+Yorum satırlarını kaldır (#’leri sil) ve fonksiyonu şu şekilde güncelle:
+python
+
+def listen_and_convert(audio_file):
+    """Yüklenen ses dosyasını metne çevirir."""
+    recognizer = sr.Recognizer()
+    try:
+        with sr.AudioFile(audio_file) as source:
+            audio = recognizer.record(source)
+            spoken_text = recognizer.recognize_google(audio, language="en-US")
+            return spoken_text
+    except sr.UnknownValueError:
+        return "Konuşma tanınamadı. Daha net bir ses dosyası yüklemeyi deneyin."
+    except sr.RequestError as e:
+        return f"API hatası: {e}. İnternet bağlantınızı veya Google Speech API limitlerini kontrol edin."
+    except Exception as e:
+        return f"Ses dosyası işlenirken bir hata oluştu: {e}"
+
+col2 Bloğunu Güncelle:
+Şu yorum satırındaki bloğu bul:
+python
+
+with col2:
+    # if st.button("Sesimi Kaydet", key="record_speech"):
+    #     ...
+
+Yorum satırlarını kaldır (#’leri sil) ve bloğu şu şekilde güncelle:
+python
+
+with col2:
+    st.write("**Ses dosyanızı yükleyin (WAV formatında):**")
+    audio_file = st.file_uploader("Ses dosyası seçin", type=["wav"])
+    if audio_file is not None:
+        st.audio(audio_file, format="audio/wav")  # Yüklenen sesi çal
+        spoken_text = listen_and_convert(audio_file)
+        st.session_state["spoken_text"] = spoken_text
+        if st.session_state["spoken_text"]:
+            st.write("**Tanınan Metniniz (Sizin Okumanız):**")
+            st.success(st.session_state["spoken_text"])  # Tanınan metni başarı olarak göster
+
+        if st.session_state["spoken_text"] and not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
+                                          and not st.session_state["spoken_text"].startswith("API hatası") \
+                                          and not st.session_state["spoken_text"].startswith("Ses dosyası işlenirken"):
+            if st.button("Analizi Yap", key="analyze_speech"):
+                error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
+                if error_rate < ERROR_THRESHOLD:
+                    st.balloons()  # Başarılı okumalarda balonlar uçsun
+                    st.success("Harika! Okumanız oldukça iyi.")
+                else:
+                    st.warning("Bazı hatalar var. Aşağıdaki raporu inceleyin.")
+                report_errors(error_rate, extra_words, missing_words)
+                st.write("**Karşılaştırma:**")
+                st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
+                st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
 
         with col3:
             if st.button("Önceki"):

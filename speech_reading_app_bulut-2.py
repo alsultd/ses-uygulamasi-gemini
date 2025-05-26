@@ -13,7 +13,7 @@ import time
 from gtts import gTTS
 import base64 # Ses dosyasını direkt HTML'e gömmek için
 # Yeni eklenecek kütüphane importu
-from streamlit_speech_to_text import speech_to_text
+#from streamlit_speech_to_text import speech_to_text
 
 # Sabitler
 ERROR_THRESHOLD = 0.3

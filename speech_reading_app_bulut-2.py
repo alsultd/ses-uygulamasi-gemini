@@ -332,7 +332,7 @@ def main():
                             st.write(f"- **Hata Oranı:** {error_rate:.2%}")
                             st.write(f"- **Fazladan Kelimeler:** {extra_words if extra_words else 'Yok'}")
                             st.write(f"- **Eksik Kelimeler:** {missing_words if missing_words else 'Yok'}")
-                           if error_rate < ERROR_THRESHOLD:
+                            if error_rate < ERROR_THRESHOLD:
                                 st.balloons()
                                 st.success("Harika! Okumanız oldukça iyi.")
                             else:

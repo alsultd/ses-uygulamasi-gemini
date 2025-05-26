@@ -318,36 +318,11 @@ def main():
                 st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
                 st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
 
-Değişiklikler:
-st.file_uploader: Kullanıcıdan WAV formatında bir ses dosyası yüklemesini istiyoruz.
-
-st.audio: Yüklenen ses dosyasını çalıyoruz, böylece kullanıcı dosyayı dinleyebilir.
-
-listen_and_convert(audio_file): Yüklenen ses dosyasını metne çeviriyoruz.
-
-Hata mesajlarını yeni duruma uygun hale getirdik ("Ses kaydı sırasında" yerine "Ses dosyası işlenirken").
-
-3. Kodu Güncelle ve Yeniden Deploy Et
-Masaüstündeki Dosyayı Düzenle:
-Windows’ta Dosya Gezgini’ni aç (Windows tuşu + E).
-
-sesli_okuma_masaustu klasörüne git.
-
-speech_reading_app_bulut_2.py dosyasını Not Defteri (Notepad) veya herhangi bir metin editörüyle aç.
-
-Aşağıdaki değişiklikleri yap:
-listen_and_convert() Fonksiyonunu Güncelle:
-Şu yorum satırındaki fonksiyonu bul:
-python
-
 # def listen_and_convert():
 #     recognizer = sr.Recognizer()
 #     with sr.Microphone() as source:
 #         st.info("Lütfen konuşmaya başlayın... (45 saniye)")
 #         ...
-
-Yorum satırlarını kaldır (#’leri sil) ve fonksiyonu şu şekilde güncelle:
-python
 
 def listen_and_convert(audio_file):
     """Yüklenen ses dosyasını metne çevirir."""
@@ -363,17 +338,6 @@ def listen_and_convert(audio_file):
         return f"API hatası: {e}. İnternet bağlantınızı veya Google Speech API limitlerini kontrol edin."
     except Exception as e:
         return f"Ses dosyası işlenirken bir hata oluştu: {e}"
-
-col2 Bloğunu Güncelle:
-Şu yorum satırındaki bloğu bul:
-python
-
-with col2:
-    # if st.button("Sesimi Kaydet", key="record_speech"):
-    #     ...
-
-Yorum satırlarını kaldır (#’leri sil) ve bloğu şu şekilde güncelle:
-python
 
 with col2:
     st.write("**Ses dosyanızı yükleyin (WAV formatında):**")

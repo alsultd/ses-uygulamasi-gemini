@@ -145,23 +145,23 @@ def report_errors(error_rate, extra_words, missing_words):
             missing_data.append({"Kelime": word, "Telaffuz": phonetic, "Türkçe": translation})
         st.table(missing_data)
 
-def listen_and_convert():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("Lütfen konuşmaya başlayın... (45 saniye)")
-        recognizer.adjust_for_ambient_noise(source, duration=1)
-        recognizer.energy_threshold = 300
-        recognizer.pause_threshold = 1.0
-        try:
-            audio = recognizer.listen(source, timeout=45, phrase_time_limit=40)
-            spoken_text = recognizer.recognize_google(audio, language="en-US")
-            return spoken_text
-        except sr.UnknownValueError:
-            return "Konuşma tanınamadı. Daha net konuşmayı deneyin."
-        except sr.RequestError as e:
-            return f"API hatası: {e}. İnternet bağlantınızı veya Google Speech API limitlerini kontrol edin."
-        except Exception as e:
-            return f"Ses kaydı sırasında beklenmeyen bir hata oluştu: {e}"
+#def listen_and_convert():
+#    recognizer = sr.Recognizer()
+#    with sr.Microphone() as source:
+#        st.info("Lütfen konuşmaya başlayın... (45 saniye)")
+#        recognizer.adjust_for_ambient_noise(source, duration=1)
+#        recognizer.energy_threshold = 300
+#        recognizer.pause_threshold = 1.0
+#        try:
+#            audio = recognizer.listen(source, timeout=45, phrase_time_limit=40)
+#            spoken_text = recognizer.recognize_google(audio, language="en-US")
+#            return spoken_text
+#        except sr.UnknownValueError:
+#            return "Konuşma tanınamadı. Daha net konuşmayı deneyin."
+#        except sr.RequestError as e:
+#            return f"API hatası: {e}. İnternet bağlantınızı veya Google Speech API limitlerini kontrol edin."
+#        except Exception as e:
+#            return f"Ses kaydı sırasında beklenmeyen bir hata oluştu: {e}"
 
 # --- Ana Streamlit Uygulaması ---
 
@@ -253,28 +253,28 @@ def main():
         with col1:
             if st.button("Paragrafı Oku", key="read_paragraph"):
                 read_paragraph(paragraphs[current_index])
-        with col2:
-            if st.button("Sesimi Kaydet", key="record_speech"):
-                spoken_text = listen_and_convert()
-                st.session_state["spoken_text"] = spoken_text
-                if st.session_state["spoken_text"]:
-                    st.write("**Tanınan Metniniz (Sizin Okumanız):**")
-                    st.success(st.session_state["spoken_text"]) # Tanınan metni başarı olarak göster
+        #with col2:
+        #    if st.button("Sesimi Kaydet", key="record_speech"):
+        #        spoken_text = listen_and_convert()
+        #        st.session_state["spoken_text"] = spoken_text
+        #        if st.session_state["spoken_text"]:
+        #            st.write("**Tanınan Metniniz (Sizin Okumanız):**")
+        #            st.success(st.session_state["spoken_text"]) # Tanınan metni başarı olarak göster
 
-            if st.session_state["spoken_text"] and not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
-                                              and not st.session_state["spoken_text"].startswith("API hatası") \
-                                              and not st.session_state["spoken_text"].startswith("Ses kaydı sırasında"):
-                if st.button("Analizi Yap", key="analyze_speech"):
-                    error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
-                    if error_rate < ERROR_THRESHOLD:
-                        st.balloons() # Başarılı okumalarda balonlar uçsun
-                        st.success("Harika! Okumanız oldukça iyi.")
-                    else:
-                        st.warning("Bazı hatalar var. Aşağıdaki raporu inceleyin.")
-                    report_errors(error_rate, extra_words, missing_words)
-                    st.write("**Karşılaştırma:**")
-                    st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
-                    st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
+        #    if st.session_state["spoken_text"] and not st.session_state["spoken_text"].startswith("Konuşma tanınamadı") \
+        #                                     and not st.session_state["spoken_text"].startswith("API hatası") \
+        #                                     and not st.session_state["spoken_text"].startswith("Ses kaydı sırasında"):
+        #        if st.button("Analizi Yap", key="analyze_speech"):
+        #            error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
+        #            if error_rate < ERROR_THRESHOLD:
+        #                st.balloons() # Başarılı okumalarda balonlar uçsun
+        #                st.success("Harika! Okumanız oldukça iyi.")
+        #            else:
+        #                st.warning("Bazı hatalar var. Aşağıdaki raporu inceleyin.")
+        #            report_errors(error_rate, extra_words, missing_words)
+        #            st.write("**Karşılaştırma:**")
+        #            st.markdown(f"**Orijinal Paragraf:** `{paragraphs[current_index]}`")
+        #            st.markdown(f"**Sizin Okumanız:** `{st.session_state['spoken_text']}`")
 
         with col3:
             if st.button("Önceki"):

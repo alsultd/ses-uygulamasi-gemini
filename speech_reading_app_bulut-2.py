@@ -194,8 +194,8 @@ def main():
     #topic_no = st.number_input("Konu No giriniz:", min_value=1, max_value=TOTAL_TOPICS, step=1,
                                 help=f"Toplam {TOTAL_TOPICS} konu mevcut. Lütfen 1 ile {TOTAL_TOPICS} arasında bir sayı seçin.")
     topic_no = st.number_input("Konu No giriniz:", min_value=1, max_value=TOTAL_TOPICS, step=1,
-                           value=random.randint(1, TOTAL_TOPICS),
-                           help=f"Toplam {TOTAL_TOPICS} konu mevcut. Lütfen 1 ile {TOTAL_TOPICS} arasında bir sayı seçin.")
+                               value=random.randint(1, TOTAL_TOPICS),
+                               help=f"Toplam {TOTAL_TOPICS} konu mevcut. Lütfen 1 ile {TOTAL_TOPICS} arasında bir sayı seçin.")
 
     # Metni Yükle butonu, dosya bulunduğunda her zaman etkin olacak
     if st.button("Metni Yükle"):

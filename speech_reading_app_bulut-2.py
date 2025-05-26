@@ -308,7 +308,7 @@ def main():
                                               and not st.session_state["spoken_text"].startswith("Ses dosyası işlenirken"):
                 if st.button("Analizi Yap", key="analyze_speech"):
                     error_rate, extra_words, missing_words = evaluate_speech(paragraphs[current_index], st.session_state["spoken_text"])
-                   if error_rate < ERROR_THRESHOLD:
+                    if error_rate < ERROR_THRESHOLD:
                         st.balloons()  # Başarılı okumalarda balonlar uçsun
                         st.success("Harika! Okumanız oldukça iyi.")
                 else:

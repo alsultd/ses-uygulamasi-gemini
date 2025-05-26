@@ -199,7 +199,7 @@ def main():
 
     # Metni Yükle butonu, dosya bulunduğunda her zaman etkin olacak
     if st.button("Metni Yükle"):
-        cache_key = f"{OCR_Ana_Cikti_Guncel.docx}_{topic_no}" # Önbellek anahtarı dosya adı ve konu numarası
+        cache_key = f"{DOCX_FILE_NAME}_{topic_no}" # Önbellek anahtarı dosya adı ve konu numarası
         if cache_key not in st.session_state["doc_text"]:
             text = get_text_from_docx(doc_path_for_processing, topic_no)
             if text:

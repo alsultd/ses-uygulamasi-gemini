@@ -295,9 +295,17 @@ def main():
         with col2:
             if st.button("Sesle Oku", key="record_speech"):
                 st.write("3 saniye bekleyin...")
-                time.sleep(3)  # 3 saniye bekle
-               st.audio("beep.wav", format="audio/wav")  # Bip sesini çal
-               st.session_state["show_upload"] = True  # Ses dosyası yükleme alanını göster
+                time.sleep(3)
+                # FontAwesome mikrofon ikonu ve "Konuş" yazısı
+                st.markdown(
+                    """
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+                    <i class="fas fa-microphone-alt" style="font-size: 24px; color: green;"></i>
+                    <span style="font-size: 20px; font-weight: bold; margin-left: 10px;">Konuş</span>
+                    """,
+                    unsafe_allow_html=True
+                )
+                st.session_state["show_upload"] = True
 
             if "show_upload" in st.session_state and st.session_state["show_upload"]:
                 st.warning("Not: Streamlit Cloud mikrofon erişimine izin vermiyor. Lütfen paragrafı okuduğunuz bir ses dosyasını yükleyin (WAV formatında, en az 45 saniye).")

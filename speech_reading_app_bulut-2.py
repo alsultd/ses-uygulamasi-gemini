@@ -297,7 +297,7 @@ def main():
                 st.write("3 saniye bekleyin...")
                 time.sleep(3)
                 # FontAwesome mikrofon ikonu ve "Konuş" yazısı
-                #---------
+                #---------27.05.2025
                 print("🔊 Okumaya başla! (Bip sesiyle beraber)")
                 #--------------------------------
                 st.markdown(

@@ -297,6 +297,9 @@ def main():
                 st.write("3 saniye bekleyin...")
                 time.sleep(3)
                 # FontAwesome mikrofon ikonu ve "Konuş" yazısı
+                #---------
+                print("🔊 Okumaya başla! (Bip sesiyle beraber)")
+                #--------------------------------
                 st.markdown(
                     """
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
